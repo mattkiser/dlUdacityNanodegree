@@ -13359,8 +13359,8 @@ height=263
         
         <span class="c1">#### Set this to your implemented sigmoid function ####</span>
         <span class="c1"># Activation function is the sigmoid function</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">activation_function</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">derivative</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">activation_function</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">))</span> <span class="c1">#learned about this on slack</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">derivative</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="c1">#got tipped off to do this on slack as well</span>
 
     
     <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs_list</span><span class="p">,</span> <span class="n">targets_list</span><span class="p">):</span>
@@ -13372,7 +13372,7 @@ height=263
         <span class="c1">### Forward pass ###</span>
         <span class="c1"># TODO: Hidden layer</span>
         <span class="n">hidden_inputs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_input_to_hidden</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
-        <span class="c1">#the dot product of the matrix with &#39;hidden nodes&#39; rows and &#39;input nodes&#39; columns  with the &#39;input nodes&#39; row vector</span>
+        <span class="c1">#the dot product of the matrix with &#39;hidden nodes&#39; rows and &#39;input nodes&#39; columns  with the &#39;input nodes&#39; matrix</span>
         <span class="n">hidden_outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">activation_function</span><span class="p">(</span><span class="n">hidden_inputs</span><span class="p">)</span> <span class="c1">#this creates a vector</span>
         
         
@@ -13389,7 +13389,6 @@ height=263
 
         <span class="c1">#had some help with the below by following a thread in the forum by zhuangzelang</span>
         
-        
         <span class="c1"># TODO: Backpropagated error</span>
         <span class="n">hidden_errors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_hidden_to_output</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">output_errors</span><span class="p">)</span> <span class="c1">#this is taking the dot product of the output errors (vector) with the weights (aa vector) that produced it</span>
         <span class="n">hidden_grad</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">hidden_outputs</span><span class="p">)</span> <span class="c1">#this is the reversing back into the weights which is a vector</span>
@@ -13398,6 +13397,8 @@ height=263
         <span class="bp">self</span><span class="o">.</span><span class="n">weights_hidden_to_output</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lr</span> <span class="o">*</span> <span class="n">output_errors</span> <span class="o">*</span> <span class="n">hidden_outputs</span><span class="o">.</span><span class="n">T</span> <span class="c1">#the learning rate (scalar) times the error (vector) times the hidden output (matrix)</span>
         <span class="c1">#scalar times an array of &#39;hidden_nodes&#39; columns and 1 row times and a </span>
         <span class="bp">self</span><span class="o">.</span><span class="n">weights_input_to_hidden</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lr</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">((</span><span class="n">hidden_errors</span> <span class="o">*</span> <span class="n">hidden_grad</span><span class="p">),</span> <span class="n">inputs</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="c1">#the learning rate (scalar) times the dot product (vector b/c it involves a matrix) of the product of two vectors with another matrix (the inputs)</span>
+        
+        <span class="c1">##here stops where i got help from that forum thread</span>
         
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs_list</span><span class="p">):</span>
         <span class="c1"># Run a forward pass through the network</span>
